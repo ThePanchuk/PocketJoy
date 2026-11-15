@@ -41,6 +41,22 @@ landscape area, sizes in percent of its height. Then run
 `npm run test:layouts`, which checks it against four phone aspect ratios and
 verifies the lobby preview.
 
+## Changing the icon
+
+`web/icon.svg` is the icon; `web/icon-small.svg` is the same thing drawn
+more coarsely, used at 16 and 24 px where fine detail turns to mush. Edit the
+SVG, then:
+
+```bash
+npm run build:icons
+```
+
+That rasterizes both files into `web/icons/` - the `.ico` the executable and
+the favicon use, plus the PNGs the pages link. The script understands only the
+shapes these two files use (rounded rectangles, circles, one gradient, one
+stroke); if the icon ever needs paths or text, render it in a browser instead
+and commit the result. Afterwards `npm run build:exe` picks the new icon up.
+
 ## Style
 
 Code and comments in English; user-facing text goes through `t()`. Comments

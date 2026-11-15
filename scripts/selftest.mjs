@@ -500,6 +500,9 @@ try {
     ['Pad-Script', '/pad/pad.js'],
     ['Protokoll', '/shared/protocol.js'],
     ['Client-Lib', '/client/pocketjoy.js'],
+    ['Icon', '/icon.svg'],
+    ['Favicon', '/favicon.ico'],
+    ['Icon-PNG', '/icons/icon-180.png'],
   ]) {
     const r = await fetch(`http://127.0.0.1:${PORT}${url}`);
     check(`${name} wird ausgeliefert`, r.ok, `HTTP ${r.status}`);

@@ -28,7 +28,11 @@ h1 {
   margin: 0;
   font-size: 30px;
   letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 11px;
 }
+.logo { width: 34px; height: 34px; }
 .sub { margin: 4px 0 0; color: var(--muted); }
 
 header { position: relative; }

@@ -115,9 +115,13 @@ const FILE_ROUTES = {
   '/pad': 'web/pad/index.html',
   '/p': 'web/pad/index.html',
   '/demo': 'examples/arena/index.html',
+  '/icon.svg': 'web/icon.svg',
+  '/icon-small.svg': 'web/icon-small.svg',
+  '/favicon.ico': 'web/icons/pocketjoy.ico',
   '/web': 'examples/web-arena/index.html',
 };
 const DIR_ROUTES = [
+  ['/icons/', 'web/icons'],
   ['/pad/', 'web/pad'],
   ['/host/', 'web/host'],
   ['/shared/', 'shared'],

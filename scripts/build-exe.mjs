@@ -23,9 +23,14 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { Data, NtExecutable, NtExecutableResource, Resource } from 'resedit';
+
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const BUILD = path.join(ROOT, 'build');
 const OUT = path.join(ROOT, 'PocketJoy.exe');
+const ICON = path.join(ROOT, 'web', 'icons', 'pocketjoy.ico');
+
+const { version } = JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8'));
 
 if (process.platform !== 'win32') {
   console.error('\n  Dieses Skript baut eine Windows-exe und laeuft nur unter Windows.');
@@ -92,15 +97,86 @@ fs.writeFileSync(path.join(BUILD, 'sea-config.json'), JSON.stringify({
   disableExperimentalSEAWarning: true,
 }, null, 2));
 
-console.log('  1/3  Startprogramm vorbereiten');
+/**
+ * Give the copy of node.exe PocketJoy's icon and name.
+ *
+ * Without this the file shows Node's icon and calls itself "Node.js
+ * JavaScript Runtime" in its properties - confusing for something that sits
+ * on a desktop as PocketJoy. Icon and text live in the exe's resource
+ * section, which is plain data in the file; resedit rewrites it.
+ *
+ * The signature is discarded on the way (ignoreCert). It is already void -
+ * injecting the program below changes the file either way - and keeping a
+ * broken signature is worse than having none.
+ */
+function applyIcon() {
+  if (!fs.existsSync(ICON)) {
+    console.log('       Icon fehlt - wird gebaut');
+    execFileSync(process.execPath, [path.join(ROOT, 'scripts', 'build-icons.mjs')], {
+      stdio: ['ignore', 'ignore', 'inherit'],
+    });
+  }
+
+  const exe = NtExecutable.from(fs.readFileSync(OUT), { ignoreCert: true });
+  const res = NtExecutableResource.from(exe);
+  const icons = Data.IconFile.from(fs.readFileSync(ICON)).icons.map((i) => i.data);
+
+  // Replace whatever icon groups are in there rather than adding one:
+  // Explorer shows the group with the lowest id, which would still be Node's.
+  const groups = Resource.IconGroupEntry.fromEntries(res.entries);
+  const targets = groups.length
+    ? groups.map((g) => ({ id: g.id, lang: g.lang }))
+    : [{ id: 1, lang: 1033 }];
+  for (const { id, lang } of targets) {
+    Resource.IconGroupEntry.replaceIconsForResource(res.entries, id, lang, icons);
+  }
+
+  const [major, minor, patch] = version.split('.').map((n) => parseInt(n, 10) || 0);
+  for (const info of Resource.VersionInfo.fromEntries(res.entries)) {
+    info.setFileVersion(major, minor, patch, 0);
+    info.setProductVersion(major, minor, patch, 0);
+    info.setStringValues({ lang: 1033, codepage: 1200 }, {
+      ProductName: 'PocketJoy',
+      FileDescription: 'PocketJoy - phones as game controllers',
+      CompanyName: '',
+      LegalCopyright: '',
+      OriginalFilename: 'PocketJoy.exe',
+      InternalName: 'PocketJoy',
+    });
+    info.outputToResourceEntries(res.entries);
+  }
+
+  res.outputResource(exe);
+  fs.writeFileSync(OUT, Buffer.from(exe.generate()));
+}
+
+console.log('  1/4  Startprogramm vorbereiten');
 execFileSync(process.execPath, ['--experimental-sea-config', path.join(BUILD, 'sea-config.json')], {
   stdio: ['ignore', 'ignore', 'inherit'],
 });
 
-console.log('  2/3  Node mitkopieren');
-fs.copyFileSync(process.execPath, OUT);
+console.log('  2/4  Node mitkopieren');
+try {
+  fs.copyFileSync(process.execPath, OUT);
+} catch (err) {
+  // Windows locks a running exe, so a rebuild while PocketJoy is open fails
+  // with a message that says nothing about the actual problem.
+  if (err.code === 'EBUSY' || err.code === 'EPERM') {
+    console.error(`
+  PocketJoy.exe laeuft gerade und laesst sich deshalb nicht ersetzen.
+  Das Fenster schliessen (oder im Task-Manager beenden) und nochmal
+  "npm run build:exe" ausfuehren.
+`);
+    fs.rmSync(BUILD, { recursive: true, force: true });
+    process.exit(1);
+  }
+  throw err;
+}
 
-console.log('  3/3  Zusammenfuegen');
+console.log('  3/4  Icon und Beschriftung setzen');
+applyIcon();
+
+console.log('  4/4  Zusammenfuegen');
 execFileSync(process.execPath, [
   postject, OUT, 'NODE_SEA_BLOB', path.join(BUILD, 'launcher.blob'),
   '--sentinel-fuse', 'NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2',

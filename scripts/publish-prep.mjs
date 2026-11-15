@@ -10,6 +10,16 @@
  *
  * Afterwards it prints the exact commands, including the one that keeps your
  * address out of the new history.
+ *
+ * For a folder that already exists - the published repository, after the
+ * first release:
+ *
+ *   node scripts/publish-prep.mjs --update [target folder]
+ *
+ * That brings it in step with this one: files that changed are written,
+ * files that are gone here are removed there, `.git` is left alone. Copying
+ * changed files by hand is how a release quietly ships yesterday's version
+ * of something.
  */
 
 import fs from 'node:fs/promises';
@@ -17,7 +27,11 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const target = path.resolve(process.argv[2] || path.join(ROOT, '..', 'PocketJoy-public'));
+const args = process.argv.slice(2);
+const update = args.includes('--update');
+const target = path.resolve(
+  args.find((a) => !a.startsWith('--')) || path.join(ROOT, '..', 'PocketJoy-public'),
+);
 
 /** Everything a user or contributor needs. */
 const INCLUDE = [
@@ -51,15 +65,56 @@ async function copy(from, to) {
   }
 }
 
-// Refuse to overwrite something that is already there - too easy to lose work.
-try {
-  await fs.access(target);
-  console.error(`\n  ${target} gibt es schon. Bitte loeschen oder anderen Pfad angeben.\n`);
-  process.exit(1);
-} catch { /* good, it does not exist */ }
+/**
+ * Bring `to` in step with `from`: write what differs, remove what is gone.
+ * Only the entries in INCLUDE are touched, so anything else in the target -
+ * `.git` above all - is left exactly as it is.
+ */
+async function mirror(from, to, changes) {
+  const stat = await fs.stat(from);
 
-console.log(`\nVorbereiten in ${target}\n`);
+  if (!stat.isDirectory()) {
+    const fresh = await fs.readFile(from);
+    const old = await fs.readFile(to).catch(() => null);
+    if (old && old.equals(fresh)) return;
+    await fs.mkdir(path.dirname(to), { recursive: true });
+    await fs.copyFile(from, to);
+    changes.push(`  geaendert  ${path.relative(target, to)}`);
+    return;
+  }
+
+  await fs.mkdir(to, { recursive: true });
+  const wanted = (await fs.readdir(from)).filter((name) => !SKIP.has(name));
+  for (const name of wanted) {
+    await mirror(path.join(from, name), path.join(to, name), changes);
+  }
+
+  // Anything left over here was deleted or renamed on this side.
+  const present = await fs.readdir(to).catch(() => []);
+  for (const name of present) {
+    if (wanted.includes(name)) continue;
+    await fs.rm(path.join(to, name), { recursive: true, force: true });
+    changes.push(`  entfernt   ${path.relative(target, path.join(to, name))}`);
+  }
+}
+
+const exists = await fs.access(target).then(() => true, () => false);
+
+// Refuse to overwrite something that is already there - too easy to lose work.
+if (exists && !update) {
+  console.error(`\n  ${target} gibt es schon.
+  Zum Abgleichen:  node scripts/publish-prep.mjs --update "${target}"
+  Sonst bitte loeschen oder anderen Pfad angeben.\n`);
+  process.exit(1);
+}
+if (!exists && update) {
+  console.error(`\n  ${target} gibt es nicht - --update gleicht einen vorhandenen Ordner ab.\n`);
+  process.exit(1);
+}
+
+console.log(`\n${update ? 'Abgleichen mit' : 'Vorbereiten in'} ${target}\n`);
 let copied = 0;
+const changes = [];
 for (const entry of INCLUDE) {
   const from = path.join(ROOT, entry);
   try {
@@ -68,9 +123,16 @@ for (const entry of INCLUDE) {
     console.log(`  fehlt   ${entry}`);
     continue;
   }
-  await copy(from, path.join(target, entry));
+  if (update) await mirror(from, path.join(target, entry), changes);
+  else await copy(from, path.join(target, entry));
   console.log(`  ok      ${entry}`);
   copied++;
+}
+
+if (update) {
+  console.log(changes.length
+    ? `\n${changes.join('\n')}`
+    : '\n  Nichts zu tun - die Ordner sind gleich.');
 }
 
 // A last look for things that should not become public.
@@ -98,6 +160,19 @@ if (problems.length) {
   for (const p of problems) console.log(`    - ${p}`);
 } else {
   console.log('  Keine E-Mail-Adressen oder Geheimnisse in den Dateien gefunden.');
+}
+
+if (update) {
+  console.log(`
+  Naechste Schritte:
+
+    cd "${target}"
+    git status
+    git add -A
+    git commit
+    git push
+`);
+  process.exit(0);
 }
 
 console.log(`

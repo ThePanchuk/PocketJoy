@@ -14,6 +14,7 @@
     "test": "node scripts/checklayouts.mjs && node scripts/checklang.mjs && node scripts/selftest.mjs",
     "test:layouts": "node scripts/checklayouts.mjs",
     "test:lang": "node scripts/checklang.mjs",
+    "build:icons": "node scripts/build-icons.mjs",
     "build:exe": "node scripts/build-exe.mjs",
     "install:windows": "node scripts/install-windows.mjs"
   },
@@ -56,6 +57,7 @@
     "LICENSE"
   ],
   "devDependencies": {
-    "postject": "^1.0.0-alpha.6"
+    "postject": "^1.0.0-alpha.6",
+    "resedit": "^3.1.1"
   }
 }

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img"
+     aria-label="PocketJoy">
+  <title>PocketJoy</title>
+
+  <!--
+    The 16 and 24 pixel version. Same idea, but only what survives at that
+    size: phone outline, dark screen, one fat d-pad, two dots. The sticks and
+    the gradient from the large icon turn to mush down here, so they are gone.
+  -->
+
+  <rect x="8" y="2" width="48" height="60" rx="9" fill="#2b323f"/>
+  <rect x="8" y="2" width="48" height="60" rx="9" fill="none"/>
+  <rect x="12" y="7" width="40" height="50" rx="5" fill="#0b0d11"/>
+
+  <!-- d-pad, deliberately oversized -->
+  <g fill="#3d8bfd">
+    <rect x="19" y="18" width="8" height="24" rx="2.5"/>
+    <rect x="11" y="26" width="24" height="8" rx="2.5"/>
+  </g>
+
+  <circle cx="44" cy="24" r="6" fill="#f2544b"/>
+  <circle cx="44" cy="38" r="6" fill="#2fbf71"/>
+</svg>
