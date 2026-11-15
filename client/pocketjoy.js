@@ -301,7 +301,16 @@ export class PocketJoy {
       this._handle(msg, resolve);
     };
 
+    // Two WebSocket implementations end up here, and they do not agree on
+    // what a failed connection looks like: the `ws` package always follows an
+    // error with a close event, the one Node has had as a global since v22
+    // does not. So a failure is handled wherever it shows up first, and this
+    // flag keeps the second event from running it twice - otherwise a
+    // reconnect would be scheduled two times over.
+    let done = false;
     const onClose = () => {
+      if (done) return;
+      done = true;
       const was = this.connected;
       this.connected = false;
       this._bySlot.clear();
@@ -325,12 +334,12 @@ export class PocketJoy {
       ws.addEventListener('open', onOpen);
       ws.addEventListener('message', (e) => onMessage(e.data));
       ws.addEventListener('close', onClose);
-      ws.addEventListener('error', () => { /* close follows */ });
+      ws.addEventListener('error', onClose);
     } else {
       ws.on('open', onOpen);
       ws.on('message', (d) => onMessage(d.toString()));
       ws.on('close', onClose);
-      ws.on('error', () => { /* close follows */ });
+      ws.on('error', onClose);
     }
   }
 
