@@ -8,6 +8,9 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    # The suite starts a real server and waits on sockets. Without a limit a
+    # hang here occupies a runner for six hours and never produces a log.
+    timeout-minutes: 10
     strategy:
       matrix:
         # The oldest supported release and the current one. The suite starts a
@@ -25,6 +28,7 @@ jobs:
 
   python:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
