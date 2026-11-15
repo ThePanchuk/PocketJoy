@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PocketJoy Web-Modus – Arena</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #0b0d11; }
+  body { font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: #e8ebf0; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+
+  #overlay {
+    position: fixed; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(11, 13, 17, 0.95); text-align: center; padding: 20px;
+  }
+  #overlay.hidden { display: none; }
+  .box { max-width: 620px; }
+  h1 { font-size: 32px; margin: 0 0 4px; letter-spacing: -0.02em; }
+  .muted { color: #929aa9; }
+  .small { font-size: 13px; }
+  .badge {
+    display: inline-block; margin-bottom: 14px; padding: 3px 10px;
+    border: 1px solid #2a313d; border-radius: 999px;
+    font-size: 12px; color: #929aa9;
+  }
+  .code {
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 54px; font-weight: 700; letter-spacing: 0.14em;
+    color: #2fbf71; margin: 10px 0 2px;
+  }
+  .url {
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 15px; color: #3d8bfd; word-break: break-all; margin: 0 0 14px;
+  }
+  #qr { width: 190px; height: 190px; background: #fff; padding: 8px; border-radius: 10px; margin: 8px auto; display: block; }
+  kbd { background: #1b2029; border: 1px solid #2a313d; border-radius: 5px; padding: 1px 6px; font-size: 12.5px; }
+
+  #verbindungen {
+    position: fixed; right: 12px; top: 12px;
+    display: flex; flex-direction: column; gap: 5px;
+    font-size: 12px; pointer-events: none;
+  }
+  #verbindungen .v {
+    display: flex; align-items: center; gap: 7px;
+    padding: 3px 9px; border-radius: 999px;
+    background: rgba(22, 26, 33, 0.85); border: 1px solid #262c37;
+  }
+  #verbindungen .punkt { width: 8px; height: 8px; border-radius: 50%; }
+  #verbindungen .wie { color: #929aa9; }
+  #verbindungen .lan .wie { color: #2fbf71; }
+  #verbindungen .relay .wie { color: #f7b32b; }
+</style>
+</head>
+<body>
+
+<canvas id="c"></canvas>
+
+<!-- Which route each phone took - handy while testing with real devices. -->
+<div id="verbindungen"></div>
+
+<div id="overlay">
+  <div class="box">
+    <span class="badge" data-i18n="demo.webBadge"></span>
+    <h1>Arena</h1>
+    <p class="muted small" data-i18n="demo.webIntro"></p>
+
+    <div id="raum">
+      <p class="muted small" style="margin-bottom:0" data-i18n="demo.roomCode"></p>
+      <p class="code" id="code">····</p>
+      <img id="qr" alt="">
+      <p class="url" id="padUrl">…</p>
+      <p class="muted small">
+        <span id="controlsHint"></span>
+      </p>
+    </div>
+
+    <p class="muted small" id="status"></p>
+  </div>
+</div>
+
+<script type="module" src="/web/game.js"></script>
+</body>
+</html>

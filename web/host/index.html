@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PocketJoy Lobby</title>
+<link rel="stylesheet" href="/host/host.css">
+</head>
+<body>
+
+<header>
+  <h1>PocketJoy</h1>
+  <p class="sub" data-i18n="app.tagline"></p>
+  <select id="langSelect" class="lang"></select>
+</header>
+
+<main>
+  <section class="panel join">
+    <h2 data-i18n="lobby.join"></h2>
+    <div class="join-body">
+      <div class="qr-wrap">
+        <img id="qr" alt="" data-i18n-alt="lobby.qrAlt" width="260" height="260">
+        <p id="qrFallback" class="muted small hidden">
+          <span data-i18n="lobby.noQr"></span>
+        </p>
+      </div>
+      <div class="join-text">
+        <p class="muted small" data-i18n="lobby.openOnPhone"></p>
+        <p class="url" id="padUrl">…</p>
+        <p class="muted small" data-i18n="lobby.sameWifi"></p>
+        <details id="moreAddrs">
+          <summary data-i18n="lobby.otherAddresses"></summary>
+          <ul id="addrList"></ul>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>
+      <span data-i18n="lobby.players"></span>
+      <span id="count" class="count">0 / 4</span>
+    </h2>
+    <div id="players" class="players">
+      <p class="muted empty" data-i18n="lobby.noPlayers"></p>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2 data-i18n="lobby.layoutTitle"></h2>
+    <p class="muted small" id="layoutNote">Gilt sofort für alle verbundenen Handys. Ein Spiel kann das Layout selbst setzen.</p>
+    <div id="layouts" class="layouts"></div>
+  </section>
+
+  <section class="panel">
+    <h2 data-i18n="lobby.more"></h2>
+    <div class="links">
+      <a class="btn" href="/demo" target="_blank" rel="noopener" data-i18n="lobby.openDemo"></a>
+      <button id="rumbleAll" class="btn" data-i18n="lobby.rumbleAll"></button>
+    </div>
+    <p class="muted small" id="bridgeHint"></p>
+  </section>
+</main>
+
+<footer>
+  <span id="status" class="status"></span>
+</footer>
+
+<script type="module" src="/host/host.js"></script>
+</body>
+</html>

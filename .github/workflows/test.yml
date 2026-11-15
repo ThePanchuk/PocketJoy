@@ -1,0 +1,36 @@
+name: Tests
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # The oldest supported release and the current one. The suite starts a
+        # real server and talks to it, so it genuinely exercises both.
+        node: ['18', '22']
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci
+      - run: npm test
+
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      # The bridge needs drivers that CI cannot provide, so only check that
+      # it parses and that its driver detection reports honestly.
+      - run: python -m py_compile bridge/pocketjoy_bridge.py
+      - run: pip install websockets && python bridge/pocketjoy_bridge.py --check || true

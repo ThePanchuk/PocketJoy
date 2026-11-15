@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0e1014">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>PocketJoy Controller</title>
+<link rel="stylesheet" href="/pad/pad.css">
+</head>
+<body>
+
+<!-- Connection / setup screen -->
+<div id="setup" class="screen">
+  <div class="card">
+    <h1>PocketJoy</h1>
+    <p id="status" class="status"></p>
+
+    <label class="field hidden" id="roomField">
+      <span data-i18n="pad.roomCode"></span>
+      <input id="room" type="text" maxlength="6" autocomplete="off"
+             autocapitalize="characters" spellcheck="false" placeholder="" data-i18n-placeholder="pad.roomPlaceholder"
+             style="text-transform:uppercase;letter-spacing:0.18em;font-weight:700">
+    </label>
+
+    <label class="field">
+      <span data-i18n="pad.yourName"></span>
+      <input id="name" type="text" maxlength="16" autocomplete="off"
+             autocapitalize="words" spellcheck="false" placeholder="" data-i18n-placeholder="pad.namePlaceholder">
+    </label>
+
+    <button id="go" class="primary" disabled data-i18n="pad.start"></button>
+    <p id="hint" class="hint" data-i18n="pad.autoLandscape"></p>
+  </div>
+</div>
+
+<!-- The controller itself -->
+<div id="pad" class="screen hidden">
+  <div id="controls"></div>
+
+  <div id="badge" class="badge">
+    <span id="badgeDot" class="dot"></span>
+    <span id="badgeName">P1</span>
+  </div>
+
+  <button id="menuBtn" class="menu-btn" aria-label="Menu">⋯</button>
+</div>
+
+<!-- Overlay menu -->
+<div id="menu" class="screen menu hidden">
+  <div class="card">
+    <h2 data-i18n="menu.title"></h2>
+    <p id="menuInfo" class="hint"></p>
+    <label class="field">
+      <span data-i18n="menu.language"></span>
+      <select id="langSelect"></select>
+    </label>
+
+    <button id="fullscreenBtn"></button>
+    <button id="overviewBtn" class="hidden" data-i18n="menu.overview"></button>
+    <button id="renameBtn" data-i18n="menu.rename"></button>
+    <button id="closeMenu" class="primary" data-i18n="menu.back"></button>
+  </div>
+</div>
+
+<!-- Overview: only the main controller gets here. -->
+<div id="overview" class="screen menu hidden">
+  <div class="card wide">
+    <h2 data-i18n="overview.title"></h2>
+    <p id="overviewRoom" class="hint hidden"></p>
+
+    <h3 data-i18n="overview.players"></h3>
+    <div id="overviewPlayers" class="ov-players"></div>
+
+    <h3 data-i18n="overview.layout"></h3>
+    <p id="overviewLayoutNote" class="hint"></p>
+    <div id="overviewLayouts" class="ov-layouts"></div>
+
+    <button id="closeOverview" class="primary" data-i18n="overview.back"></button>
+  </div>
+</div>
+
+<script type="module" src="/pad/pad.js"></script>
+</body>
+</html>

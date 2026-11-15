@@ -1,0 +1,56 @@
+{
+  "name": "pocketjoy",
+  "version": "1.0.0",
+  "description": "Turn phones into game controllers over the local network - for couch co-op games.",
+  "type": "module",
+  "bin": {
+    "pocketjoy": "./server/index.js"
+  },
+  "main": "./client/pocketjoy.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node server/index.js --open",
+    "demo": "node server/index.js --demo",
+    "test": "node scripts/checklayouts.mjs && node scripts/checklang.mjs && node scripts/selftest.mjs",
+    "test:layouts": "node scripts/checklayouts.mjs",
+    "test:lang": "node scripts/checklang.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "qrcode": "^1.5.4",
+    "ws": "^8.18.0"
+  },
+  "license": "MIT",
+  "author": "Stefan Stepanchuk",
+  "homepage": "https://github.com/ThePanchuk/PocketJoy#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ThePanchuk/PocketJoy.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ThePanchuk/PocketJoy/issues"
+  },
+  "keywords": [
+    "gamepad",
+    "controller",
+    "couch-coop",
+    "local-multiplayer",
+    "websocket",
+    "webrtc",
+    "phone",
+    "game-development"
+  ],
+  "files": [
+    "server",
+    "shared",
+    "client",
+    "web",
+    "examples",
+    "bridge",
+    "scripts",
+    "README.md",
+    "LICENSE"
+  ]
+}
