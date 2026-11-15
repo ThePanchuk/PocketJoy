@@ -13,7 +13,9 @@
     "demo": "node server/index.js --demo",
     "test": "node scripts/checklayouts.mjs && node scripts/checklang.mjs && node scripts/selftest.mjs",
     "test:layouts": "node scripts/checklayouts.mjs",
-    "test:lang": "node scripts/checklang.mjs"
+    "test:lang": "node scripts/checklang.mjs",
+    "build:exe": "node scripts/build-exe.mjs",
+    "install:windows": "node scripts/install-windows.mjs"
   },
   "engines": {
     "node": ">=18"
@@ -52,5 +54,8 @@
     "scripts",
     "README.md",
     "LICENSE"
-  ]
+  ],
+  "devDependencies": {
+    "postject": "^1.0.0-alpha.6"
+  }
 }

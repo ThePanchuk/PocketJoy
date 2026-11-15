@@ -3,3 +3,7 @@ node_modules/
 *.log
 bridge/__pycache__/
 bridge/.venv/
+
+# built locally, 70 MB - not committed
+PocketJoy.exe
+build/

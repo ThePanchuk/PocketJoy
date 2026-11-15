@@ -14,6 +14,25 @@ npm start
 The terminal prints a URL and a QR code. Scan it with a phone on the same
 Wi-Fi, and that phone is player 1.
 
+### Starting it without a terminal (Windows)
+
+```bash
+npm run install:windows
+```
+
+Builds `PocketJoy.exe` and asks whether to put a shortcut on the desktop and
+in the start menu. A double-click then starts the server and opens the lobby.
+
+The exe contains Node, so it runs on machines without a Node installation —
+which is why it is about 70 MB and is not committed to the repository. It has
+to stay inside the project folder: it is a launcher for the code next to it,
+not a copy of it. Undo with `npm run install:windows -- --remove`; nothing is
+registered anywhere, the shortcuts are just files.
+
+Windows SmartScreen may warn on first launch. The exe is a modified copy of
+`node.exe`, which invalidates its signature — unavoidable without code
+signing.
+
 ---
 
 ## Two ways to use it

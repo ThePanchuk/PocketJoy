@@ -86,6 +86,27 @@ Leute. Linker Stick laufen, rechter Stick zielen, A schießen.
 
 Wichtig ist nur: Handy und Rechner im **gleichen WLAN**.
 
+### Ohne Terminal starten (Windows)
+
+```bash
+npm run install:windows
+```
+
+Baut `PocketJoy.exe` und fragt, ob eine Verknüpfung auf dem Desktop und im
+Startmenü angelegt werden soll. Ein Doppelklick startet dann den Server und
+öffnet die Lobby.
+
+Die exe enthält Node und läuft deshalb auch auf Rechnern ohne
+Node-Installation – dafür ist sie rund 70 MB groß und liegt nicht im
+Repository. Sie muss **im Projektordner bleiben**: Sie ist ein Starter für den
+Code daneben, keine Kopie davon. Rückgängig mit
+`npm run install:windows -- --remove` – es wird nichts registriert, die
+Verknüpfungen sind einfache Dateien.
+
+Beim ersten Start kann Windows SmartScreen warnen. Die exe ist eine
+veränderte Kopie von `node.exe`, wodurch deren Signatur ungültig wird – ohne
+eine kostenpflichtige Code-Signatur nicht vermeidbar.
+
 ### Optionen
 
 ```bash
