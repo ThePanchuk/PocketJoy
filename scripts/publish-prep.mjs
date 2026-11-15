@@ -23,7 +23,9 @@ const target = path.resolve(process.argv[2] || path.join(ROOT, '..', 'PocketJoy-
 const INCLUDE = [
   'server', 'shared', 'client', 'web', 'examples', 'bridge', 'scripts',
   '.github',
-  'docs/screenshots', 'docs/README.de.md',
+  // The whole docs folder, not single files - listing them by name means
+  // every new document is silently left out of the next release.
+  'docs',
   'README.md', 'LICENSE', 'SECURITY.md', 'CONTRIBUTING.md',
   'package.json', 'package-lock.json', '.gitignore',
 ];

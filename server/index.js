@@ -146,11 +146,21 @@ async function serveStatic(req, res, pathname) {
   try {
     const stat = await fsp.stat(file);
     if (!stat.isFile()) return send(res, 404, 'Not found');
-    res.writeHead(200, {
+    const headers = {
       'Content-Type': MIME[path.extname(file).toLowerCase()] || 'application/octet-stream',
       'Content-Length': stat.size,
       'Cache-Control': 'no-cache',
-    });
+    };
+
+    // The library has to be loadable from a game hosted elsewhere - itch.io,
+    // your own site - otherwise every project has to copy six files and keep
+    // them in step. Only the library is opened up: it is public source code
+    // anyway, it is read-only, and nothing here is user data.
+    if (pathname.startsWith('/client/') || pathname.startsWith('/shared/')) {
+      headers['Access-Control-Allow-Origin'] = '*';
+    }
+
+    res.writeHead(200, headers);
     fs.createReadStream(file).pipe(res);
   } catch {
     send(res, 404, 'Not found');

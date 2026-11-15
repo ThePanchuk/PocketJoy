@@ -39,6 +39,10 @@ API. Your game code does not change.
 
 ## Using it in your game
 
+**Adding PocketJoy to a game? Start with
+[docs/INTEGRATION.md](docs/INTEGRATION.md)** — it covers both modes, what to
+host, and the mistakes that cost people an afternoon.
+
 Copy `client/pocketjoy.js` into your project:
 
 ```js
@@ -201,4 +205,5 @@ permissions, and that the server serves no files outside its own folders.
 
 MIT — see [LICENSE](LICENSE).
 
-Full documentation (German): [docs/README.de.md](docs/README.de.md)
+- [docs/INTEGRATION.md](docs/INTEGRATION.md) — adding PocketJoy to a game
+- [docs/README.de.md](docs/README.de.md) — full documentation (German)
